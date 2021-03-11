@@ -28,7 +28,6 @@ class DBProvider {
     final path = join(documentsDirectory.path, 'productos.db');
 
     print(path);
-    print('ctm');
 
     //Crear Database
     return await openDatabase(path, version: 1, onOpen: (db) {},

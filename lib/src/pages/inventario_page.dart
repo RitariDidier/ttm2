@@ -1,13 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ttm2/src/models/producto_model_2.dart';
-import 'package:ttm2/src/pages/login_page.dart';
+import 'package:ttm2/src/pages/editar_page.dart';
+
 import 'package:ttm2/src/providers/db_provider.dart';
-import 'package:ttm2/src/providers/producto_list_provider.dart';
 
 class InventarioPage extends StatefulWidget {
   @override
@@ -15,23 +16,12 @@ class InventarioPage extends StatefulWidget {
 }
 
 class _InventarioPageState extends State<InventarioPage> {
-  // http.Response res;
-
-  // Future<String> getData() async {
-  //   http.Response res = await http.get(Uri.encodeFull(''), headers: {
-  //     //"key":""
-  //     "Accept": "aplicattion/json"
-  //   });
-  //   //String asd = res.body;
-  //   Map dataMap = json.decode(res.body);
-
-  //   print(res.body);
-  // }
   List<ProductoModel2> listaP;
 
   @override
   Widget build(BuildContext context) {
     final _screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -87,7 +77,9 @@ class _InventarioPageState extends State<InventarioPage> {
                   size: 40,
                   color: Colors.white,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, 'agregar');
+                },
               ),
             ),
           ],
@@ -174,7 +166,16 @@ class _InventarioPageState extends State<InventarioPage> {
                       size: 30.0,
                       color: Colors.white,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                              builder: (__) => new EditarItem(
+                                  nombre: listaP[i].nombre,
+                                  tipo: listaP[i].tipo,
+                                  valor: listaP[i].valor,
+                                  id: listaP[i].id))); // EditarItem();
+                    },
                   ),
                   IconButton(
                     icon: Icon(
@@ -183,7 +184,9 @@ class _InventarioPageState extends State<InventarioPage> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      print('Delete');
+                      setState(() {
+                        DBProvider.db.deleteProducto(listaP[i].id);
+                      });
                     },
                   ),
                 ],
@@ -240,8 +243,6 @@ class _InventarioPageState extends State<InventarioPage> {
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
         // return _widgetLista(_screenSize, snapshot.data);
         if (snapshot.hasData) {
-          print('Tiene');
-
           return _widgetLista(_screenSize, snapshot.data);
         } else {
           return Container();
