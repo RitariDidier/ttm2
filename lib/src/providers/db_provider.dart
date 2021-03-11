@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'package:path/path.dart';
 import 'package:ttm2/src/models/producto_model.dart';
+import 'package:ttm2/src/models/producto_model_2.dart';
 
 class DBProvider {
   static Database _database;
@@ -30,7 +31,7 @@ class DBProvider {
     print('ctm');
 
     //Crear Database
-    return await openDatabase(path, version: 2, onOpen: (db) {},
+    return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       await db.execute('''
           CREATE TABLE productos(
@@ -43,7 +44,7 @@ class DBProvider {
     });
   }
 
-  Future<int> nuevoProductoRaw(ProductoModel nuevoProducto) async {
+  Future<int> nuevoProductoRaw(ProductoModel2 nuevoProducto) async {
     final id = nuevoProducto.id;
     final tipo = nuevoProducto.tipo;
     final valor = nuevoProducto.valor;
@@ -58,7 +59,7 @@ class DBProvider {
     return res;
   }
 
-  Future<int> nuevoProducto(ProductoModel nuevoProducto) async {
+  Future<int> nuevoProducto(ProductoModel2 nuevoProducto) async {
     final db = await database;
     final res = await db.insert('productos', nuevoProducto.toJson());
 
@@ -67,34 +68,34 @@ class DBProvider {
     return res;
   }
 
-  Future<ProductoModel> getProductoByID(int id) async {
+  Future<ProductoModel2> getProductoByID(int id) async {
     final db = await database;
     final res = await db.query('productos', where: 'id = ?', whereArgs: [id]);
 
-    return res.isNotEmpty ? ProductoModel.fromJson(res.first) : null;
+    return res.isNotEmpty ? ProductoModel2.fromJson(res.first) : null;
   }
 
-  Future<List<ProductoModel>> getTodosProductos() async {
+  Future<List<ProductoModel2>> getTodosProductos() async {
     final db = await database;
     final res = await db.query('productos');
 
     return res.isNotEmpty
-        ? res.map((p) => ProductoModel.fromJson(p)).toList()
+        ? res.map((p) => ProductoModel2.fromJson(p)).toList()
         : [];
   }
 
-  Future<List<ProductoModel>> getProductoByTipo(String tipo) async {
+  Future<List<ProductoModel2>> getProductoByTipo(String tipo) async {
     final db = await database;
     final res = await db.rawQuery('''
       SELECT * FROM productos WHERE tipo = '$tipo'
     ''');
 
     return res.isNotEmpty
-        ? res.map((p) => ProductoModel.fromJson(p)).toList()
+        ? res.map((p) => ProductoModel2.fromJson(p)).toList()
         : [];
   }
 
-  Future<int> updateProducto(ProductoModel newProducto) async {
+  Future<int> updateProducto(ProductoModel2 newProducto) async {
     final db = await database;
     final res = await db.update('productos', newProducto.toJson(),
         where: 'id = ?', whereArgs: [newProducto.id]);

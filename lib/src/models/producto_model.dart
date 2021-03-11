@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final productoModel = productoModelFromJson(jsonString);
+
 import 'dart:convert';
 
 ProductoModel productoModelFromJson(String str) =>
@@ -7,37 +11,32 @@ String productoModelToJson(ProductoModel data) => json.encode(data.toJson());
 
 class ProductoModel {
   ProductoModel({
-    this.id,
+    this.codigo,
     this.nombre,
-    this.tipo,
-    this.valor,
-    //this.cantidad,
+    this.precio,
+    this.categoriaId,
+    this.tiendaId,
   });
 
-  int id;
+  String codigo;
   String nombre;
-  String tipo;
-  String valor;
-  //int cantidad;
+  int precio;
+  int categoriaId;
+  int tiendaId;
 
   factory ProductoModel.fromJson(Map<String, dynamic> json) => ProductoModel(
-        id: json["id"],
+        codigo: json["codigo"],
         nombre: json["nombre"],
-        tipo: json["tipo"],
-        valor: json["valor"],
-        //cantidad: json["cantidad"],
+        precio: json["precio"],
+        categoriaId: json["categoria_id"],
+        tiendaId: json["tienda_id"],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
+        "codigo": codigo,
         "nombre": nombre,
-        "tipo": tipo,
-        "valor": valor,
-        //"cantidad": cantidad,
+        "precio": precio,
+        "categoria_id": categoriaId,
+        "tienda_id": tiendaId,
       };
-  @override
-  String toString() {
-    // TODO: implement toString
-    return 'Nombre: ' + nombre + ', Tipo: ' + tipo + ' Valor: ' + valor;
-  }
 }

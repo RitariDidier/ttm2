@@ -1,7 +1,13 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:ttm2/src/models/producto_model_2.dart';
+import 'package:ttm2/src/pages/login_page.dart';
+import 'package:ttm2/src/providers/db_provider.dart';
+import 'package:ttm2/src/providers/producto_list_provider.dart';
 
 class InventarioPage extends StatefulWidget {
   @override
@@ -9,6 +15,20 @@ class InventarioPage extends StatefulWidget {
 }
 
 class _InventarioPageState extends State<InventarioPage> {
+  // http.Response res;
+
+  // Future<String> getData() async {
+  //   http.Response res = await http.get(Uri.encodeFull(''), headers: {
+  //     //"key":""
+  //     "Accept": "aplicattion/json"
+  //   });
+  //   //String asd = res.body;
+  //   Map dataMap = json.decode(res.body);
+
+  //   print(res.body);
+  // }
+  List<ProductoModel2> listaP;
+
   @override
   Widget build(BuildContext context) {
     final _screenSize = MediaQuery.of(context).size;
@@ -24,7 +44,8 @@ class _InventarioPageState extends State<InventarioPage> {
                   _agregarBotones(context),
                   _widgetBusqueda(),
                   _widgetStock(),
-                  _widgetLista(_screenSize),
+                  _widgetFuture(_screenSize),
+                  //_widgetLista(_screenSize, listaP),
                 ],
               ),
             ),
@@ -123,56 +144,62 @@ class _InventarioPageState extends State<InventarioPage> {
     );
   }
 
-  Widget _widgetLista(Size _screenSize) {
-    return Container(
-      height: _screenSize.height * 0.7, //500,
-      width: _screenSize.height * 0.7, //400,
-      child: SafeArea(
-        child: ListView.builder(
-          itemCount: 10,
-          itemBuilder: (_, i) => ListTile(
-            //leading: IconButton(icon: , onPressed: ,),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Text('Titulo',
-                    style: TextStyle(
+  Widget _widgetLista(Size _screenSize, List<dynamic> listaP) {
+    return RefreshIndicator(
+      onRefresh: obtenerPagina,
+      child: Container(
+        height: _screenSize.height * 0.7, //500,
+        width: _screenSize.height * 0.7, //400,
+        child: SafeArea(
+          child: ListView.builder(
+            itemCount: listaP.length,
+            itemBuilder: (_, i) => ListTile(
+              //leading: IconButton(icon: , onPressed: ,),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    width: _screenSize.width * 0.45,
+                    child: Text(listaP[i].nombre,
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
+                  ),
+                  // SizedBox(
+                  //   width: _screenSize.width * 0.35,
+                  // ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      size: 30.0,
                       color: Colors.white,
-                    )),
-                SizedBox(
-                  width: _screenSize.width * 0.35,
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.edit,
-                    size: 30.0,
-                    color: Colors.white,
+                    ),
+                    onPressed: () {},
                   ),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.delete,
-                    size: 30.0,
-                    color: Colors.white,
+                  IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      size: 30.0,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      print('Delete');
+                    },
                   ),
-                  onPressed: () {
-                    print('Delete');
-                  },
-                ),
-              ],
-            ),
-            subtitle: Text(
-              'ID:' + '$i',
-              style: TextStyle(color: Colors.white70),
-            ),
-            trailing: Icon(
-              Icons.keyboard_arrow_right,
-              color: Colors.grey,
-              size: 30,
-            ),
+                ],
+              ),
+              subtitle: Text(
+                'Tipo : ' + listaP[i].tipo,
+                style: TextStyle(color: Colors.white70),
+              ),
+              trailing: Icon(
+                Icons.keyboard_arrow_right,
+                color: Colors.grey,
+                size: 30,
+              ),
 
-            onTap: () => print('funcion'),
+              onTap: () => print('funcion'),
+            ),
           ),
         ),
       ),
@@ -204,6 +231,34 @@ class _InventarioPageState extends State<InventarioPage> {
         ],
       ),
     );
+  }
+
+  Widget _widgetFuture(Size _screenSize) {
+    return FutureBuilder(
+      future: DBProvider.db.getTodosProductos(),
+      //initialData: [],
+      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+        // return _widgetLista(_screenSize, snapshot.data);
+        if (snapshot.hasData) {
+          print('Tiene');
+
+          return _widgetLista(_screenSize, snapshot.data);
+        } else {
+          return Container();
+        }
+        // return Container();
+      },
+    );
+  }
+
+  Future<Null> obtenerPagina() async {
+    final duration = new Duration(seconds: 2);
+    new Timer(duration, () {
+      DBProvider.db.getTodosProductos();
+      setState(() {});
+    });
+
+    return Future.delayed(duration);
   }
 }
 
@@ -277,3 +332,14 @@ Widget _widgetBusqueda() {
     ),
   );
 }
+
+// UsuarioModel usuario =
+//         UsuarioModel(clave: '123', id: 1, correo: 'prueba@gmail.com');
+//     TiendaModel tienda = TiendaModel(id: 1, nombre: 'lapizlopez', usuarioId: 1);
+//     ProductoModel productoModel = ProductoModel(
+//         categoriaId: 2,
+//         codigo: "qwe",
+//         nombre: "lapic dick",
+//         precio: 1500,
+//         tiendaId: 1);
+//     CategoriaModel categoria = CategoriaModel(id: 2, nombre: "Utiles");

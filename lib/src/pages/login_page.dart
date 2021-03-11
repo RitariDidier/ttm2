@@ -2,10 +2,14 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:ttm2/src/models/producto_model_2.dart';
 
 class LoginPage extends StatelessWidget {
+  //List<ProductoModel2> listaP;
+
   @override
   Widget build(BuildContext context) {
+    //DBProvider.db.getTodosProductos().then((listaP) => this.listaP = listaP);
     return Scaffold(
       body: Stack(
         children: <Widget>[

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ttm2/src/models/producto_model_2.dart';
+import 'package:ttm2/src/providers/db_provider.dart';
 import 'package:ttm2/src/routes/routes.dart';
 
 void main() {
@@ -9,10 +11,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // ProductoModel2 producto =
+    //     ProductoModel2(nombre: "Lapiz", tipo: "Utiles", valor: "1500");
+    // ProductoModel2 producto1 =
+    //     ProductoModel2(nombre: "Goma", tipo: "Utiles", valor: "100");
+    // ProductoModel2 producto2 =
+    //     ProductoModel2(nombre: "Papel", tipo: "Utiles", valor: "500");
+
+    // DBProvider.db.nuevoProducto(producto);
+    // DBProvider.db.nuevoProducto(producto1);
+    // DBProvider.db.nuevoProducto(producto2);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Main',
-      initialRoute: 'tienda',
+      initialRoute: 'login',
       routes: getAplicationRoutes(),
     );
   }

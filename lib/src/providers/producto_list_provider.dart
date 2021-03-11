@@ -1,24 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:ttm2/src/models/producto_model.dart';
+import 'package:ttm2/src/models/producto_model_2.dart';
 
 import 'package:ttm2/src/providers/db_provider.dart';
 
 class ProductosListProvider extends ChangeNotifier {
-  List<ProductoModel> productos = [];
+  List<ProductoModel2> productos = [];
   String tipoSeleccionado = 'comida';
 
-  nuevoProducto(String valor, String nombre, String tipo) async {
-    final nuevoProducto =
-        new ProductoModel(valor: valor, tipo: tipo, nombre: nombre);
-    final id = await DBProvider.db.nuevoProducto(nuevoProducto);
+  // nuevoProducto(String valor, String nombre, String tipo) async {
+  //   final nuevoProducto =
+  //       new ProductoModel(valor: valor, tipo: tipo, nombre: nombre);
+  //   final id = await DBProvider.db.nuevoProducto(nuevoProducto);
 
-    //Asignar el ID de la base de datos al modelo
+  //   //Asignar el ID de la base de datos al modelo
 
-    nuevoProducto.id = id;
+  //   nuevoProducto.id = id;
 
-    this.productos.add(nuevoProducto);
-    notifyListeners();
-  }
+  //   this.productos.add(nuevoProducto);
+  //   notifyListeners();
+  // }
 
   cargarProducto() async {
     final productos = await DBProvider.db.getTodosProductos();
